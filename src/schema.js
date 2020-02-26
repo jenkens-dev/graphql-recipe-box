@@ -18,6 +18,10 @@ const typeDefs = gql`
       id: ID!
       name: String!
    }
+
+   type Query {
+       
+   }
 `;
 
 module.exports = typeDefs;

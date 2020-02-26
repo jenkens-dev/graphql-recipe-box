@@ -21,6 +21,7 @@ const typeDefs = gql`
 
    type Query {
       recipes: [Recipe]!
+      currentUser(id: ID!): User
    }
 `;
 

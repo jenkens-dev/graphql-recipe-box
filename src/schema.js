@@ -20,7 +20,7 @@ const typeDefs = gql`
    }
 
    type Query {
-       
+      recipes: [Recipe]!
    }
 `;
 

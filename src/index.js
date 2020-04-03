@@ -1,14 +1,6 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-const { buildSchema } = require('graphql');
-
-// construct a schema using GraphQL schema language
-
-const schema = buildSchema(`
-   type Query {
-      hello: String
-   }
-`);
+const schema = require('./schema');
 
 //Provide resolver fucntions for your schema fields
 const resolvers = {

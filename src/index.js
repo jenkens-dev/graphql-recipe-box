@@ -1,8 +1,30 @@
-const { ApolloServer } = require('apollo-server');
-const typeDefs = require('./schema');
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const { buildSchema } = require('graphql');
 
-const server = new ApolloServer({ typeDefs });
+// construct a schema using GraphQL schema language
 
-server.listen().then(({ url }) => {
-   console.log(`🚀 Server ready at ${url}`);
-});
+const schema = buildSchema(`
+   type Query {
+      hello: String
+   }
+`);
+
+//Provide resolver fucntions for your schema fields
+const resolvers = {
+   hello: () => 'Hello world!',
+};
+
+const app = express();
+
+app.use(
+   '/graphql',
+   graphqlHTTP({
+      schema,
+      rootValue: resolvers,
+   }),
+);
+
+app.listen(4000);
+
+console.log(`🚀 Server ready at http://localhost:4000/graphql`);

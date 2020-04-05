@@ -14,6 +14,17 @@ const context = async () => {
 
 //Provide resolver fucntions for your schema fields
 const resolvers = {
+   events: async (_, context) => {
+      const { db } = await context();
+      return db
+         .collection('events')
+         .find()
+         .toArray();
+   },
+   event: async ({ id }, context) => {
+      const { db } = await context();
+      return db.collection('events').findOne({ id });
+   },
    recipes: async (_, context) => {
       const { db } = await context();
       return db
@@ -36,7 +47,6 @@ app.use(
       context,
    }),
 );
-
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 app.listen(4000);
 

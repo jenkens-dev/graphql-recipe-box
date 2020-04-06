@@ -42,6 +42,12 @@ const schema = buildSchema(`
       id: ID!
       name: String!
    }
+
+   type Mutation {
+      editEvent(id: Int!, title: String!, description: String!): Event!
+      addTagToRecipe(id: Int!, category: String!): Recipe!
+   }
+
 `);
 
 module.exports = schema;

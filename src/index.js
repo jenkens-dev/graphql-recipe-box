@@ -25,6 +25,18 @@ const resolvers = {
       const { db } = await context();
       return db.collection('events').findOne({ id });
    },
+   editEvent: async ({ id, title, description }, context) => {
+      const { db } = await context();
+
+      return db
+         .collection('events')
+         .findOneAndUpdate(
+            { id },
+            { $set: { title, description } },
+            { returnOriginal: false },
+         )
+         .then(resp => resp.value);
+   },
    recipes: async (_, context) => {
       const { db } = await context();
       return db
@@ -35,6 +47,17 @@ const resolvers = {
    recipe: async ({ id }, context) => {
       const { db } = await context();
       return db.collection('recipes').findOne({ id });
+   },
+   addTagToRecipe: async ({ id, category }, context) => {
+      const { db } = await context();
+      return db
+         .collection('recipes')
+         .findOneAndUpdate(
+            { id },
+            { $addToSet: { categories: { name: category } } },
+            { returnOriginal: false },
+         )
+         .then(resp => resp.value);
    },
 };
 

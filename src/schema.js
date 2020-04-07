@@ -1,33 +1,32 @@
-const { gql } = require('apollo-server');
+const { buildSchema } = require('graphql');
 
-const typeDefs = gql`
+const schema = buildSchema(`
    type Query {
-      recipes: [Recipe]!
-      recipe(id: ID!): Recipe
+      events: [Event!]!
+      recipes: [Recipe!]!
+      event(id: Int!): Event!
+      recipe(id: Int!): Recipe!
+      hello: String
       currentUser(id: ID!): User
-      me: User
    }
 
-   type Mutation {
-      saveRecipe(recipeID: ID!): SavedRecipeResponse!
-      unsaveRecipe(recipeID: ID!): SavedRecipeResponse!
-      createRecipe(
-         name: String!
-         instructions: String!
-         picture: String!
-      ): SavedRecipeResponse!
-      login(email: String): String
-   }
+   type Event {
+      id: ID!
+      title: String!
+      description: String
+      date: String
+      attendants: [Person!]
+    }
 
-   type SavedRecipeResponse {
-      success: Boolean!
-      message: String
-      recipe: Recipe
-   }
+    type Person {
+      id: ID!
+      name: String!
+      age: Int
+    }
 
    type User {
       id: ID!
-      email: String!
+      username: String!
       savedRecipes: [Recipe]!
    }
 
@@ -43,6 +42,12 @@ const typeDefs = gql`
       id: ID!
       name: String!
    }
-`;
 
-module.exports = typeDefs;
+   type Mutation {
+      editEvent(id: Int!, title: String!, description: String!): Event!
+      addTagToRecipe(id: Int!, category: String!): Recipe!
+   }
+
+`);
+
+module.exports = schema;

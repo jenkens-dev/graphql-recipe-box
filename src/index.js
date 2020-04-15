@@ -1,80 +1,24 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const schema = require('./schema');
+const resolvers = require('./resolvers');
 const startDatabase = require('./database');
 const expressPlayground = require('graphql-playground-middleware-express')
    .default;
-const isTokenValid = require('./validate');
 
 // Create a context for holding contextual data
-const context = async req => {
+const context = async (req) => {
    const db = await startDatabase();
    const { authorization: token } = req.headers;
    return { db, token };
 };
 
 //Provide resolver fucntions for your schema fields
-const resolvers = {
-   events: async (_, context) => {
-      const { db, token } = await context();
-      const { error } = await isTokenValid(token);
-      const events = db.collection('events').find();
-      return !error
-         ? events.toArray()
-         : events.project({ attendants: null }).toArray();
-   },
-   event: async ({ id }, context) => {
-      const { db, token } = await context();
-      const { error } = await isTokenValid(token);
-      const event = await db.collection('events').findOne({ id });
-      return !error ? event : { ...event, attendants: null };
-   },
-   editEvent: async ({ id, title, description }, context) => {
-      const { db, token } = await context();
-
-      const { error } = await isTokenValid(token);
-
-      if (error) {
-         throw new Error(error);
-      }
-
-      return db
-         .collection('events')
-         .findOneAndUpdate(
-            { id },
-            { $set: { title, description } },
-            { returnOriginal: false },
-         )
-         .then(resp => resp.value);
-   },
-   recipes: async (_, context) => {
-      const { db } = await context();
-      return db
-         .collection('recipes')
-         .find()
-         .toArray();
-   },
-   recipe: async ({ id }, context) => {
-      const { db } = await context();
-      return db.collection('recipes').findOne({ id });
-   },
-   addTagToRecipe: async ({ id, category }, context) => {
-      const { db } = await context();
-      return db
-         .collection('recipes')
-         .findOneAndUpdate(
-            { id },
-            { $addToSet: { categories: { name: category } } },
-            { returnOriginal: false },
-         )
-         .then(resp => resp.value);
-   },
-};
 
 const app = express();
 app.use(
    '/graphql',
-   graphqlHTTP(async req => ({
+   graphqlHTTP(async (req) => ({
       schema,
       rootValue: resolvers,
       context: () => context(req),

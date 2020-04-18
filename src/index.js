@@ -1,30 +1,80 @@
-const express = require('express');
-const graphqlHTTP = require('express-graphql');
-const schema = require('./schema');
-const resolvers = require('./resolvers');
-const startDatabase = require('./database');
-const expressPlayground = require('graphql-playground-middleware-express')
-   .default;
+const { ApolloServer, gql } = require('apollo-server');
 
-// Create a context for holding contextual data
-const context = async (req) => {
-   const db = await startDatabase();
-   const { authorization: token } = req.headers;
-   return { db, token };
+const typeDefs = gql`
+   type Query {
+      recipes: [Recipe!]!
+      recipe(id: ID!): Recipe!
+      hello: String
+   }
+
+   type User {
+      id: ID!
+      username: String!
+      savedRecipes: [Recipe]!
+   }
+
+   type Recipe {
+      id: ID!
+      name: String!
+      instructions: String!
+      picture: String!
+      categories: [Tag]!
+   }
+
+   type Tag {
+      id: ID!
+      name: String!
+   }
+
+   type Mutation {
+      addTagToRecipe(id: Int!, category: String!): Recipe!
+   }
+`;
+
+const recipes = [
+   {
+      id: 1,
+      name: 'Apple Pie',
+      instructions: 'Insert instructions here',
+      picture: 'Insert picture here',
+      categories: [
+         {
+            id: 1,
+            name: 'Vegetarian',
+         },
+         {
+            id: 2,
+            name: 'Dessert',
+         },
+      ],
+   },
+   {
+      id: 2,
+      name: 'Tomato Soup',
+      instructions: 'Insert instructions here',
+      picture: 'Insert picture here',
+      categories: [
+         {
+            id: 1,
+            name: 'Vegetarian',
+         },
+         {
+            id: 3,
+            name: 'Soup',
+         },
+      ],
+   },
+];
+
+const resolvers = {
+   Query: {
+      recipes: () => recipes,
+      hello: () => 'hi',
+   },
 };
 
-//Provide resolver fucntions for your schema fields
+const server = new ApolloServer({ typeDefs, resolvers });
 
-const app = express();
-app.use(
-   '/graphql',
-   graphqlHTTP(async (req) => ({
-      schema,
-      rootValue: resolvers,
-      context: () => context(req),
-   })),
-);
-app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
-app.listen(4000);
-
-console.log(`🚀 Server ready at http://localhost:4000/graphql`);
+server.listen().then(({ url }) => {
+   console.log(`🚀  Server ready at ${url}`);
+});

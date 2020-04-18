@@ -12,68 +12,35 @@ async function startDatabase() {
 
    if (!database) {
       database = connection.db();
-      await database.collection('events').insertMany([
-         {
-            id: 1,
-            title: 'GraphQL Introduction Night',
-            description: 'Introductionary night to GraphQL',
-            date: '2019-11-06T17:34:25+00:00',
-            attendants: [
-               {
-                  id: 1,
-                  name: 'Peter',
-                  age: 34,
-               },
-               {
-                  id: 2,
-                  name: 'Kassandra',
-                  age: 23,
-               },
-            ],
-         },
-         {
-            id: 2,
-            title: 'GraphQL Introduction Night #2',
-            description: 'Introductionary night to GraphQL',
-            date: '2019-11-06T17:34:25+00:00',
-            attendants: [
-               {
-                  id: 3,
-                  name: 'Kim',
-                  age: null,
-               },
-            ],
-         },
-      ]);
       await database.collection('recipes').insertMany([
          {
-            id: 1,
+            id: '1',
             name: 'Apple Pie',
             instructions: 'Insert instructions here',
             picture: 'Insert picture here',
             categories: [
                {
-                  id: 1,
+                  id: '1',
                   name: 'Vegetarian',
                },
                {
-                  id: 2,
+                  id: '2',
                   name: 'Dessert',
                },
             ],
          },
          {
-            id: 2,
+            id: '2',
             name: 'Tomato Soup',
             instructions: 'Insert instructions here',
             picture: 'Insert picture here',
             categories: [
                {
-                  id: 1,
+                  id: '1',
                   name: 'Vegetarian',
                },
                {
-                  id: 3,
+                  id: '3',
                   name: 'Soup',
                },
             ],

@@ -2,27 +2,11 @@ const { buildSchema } = require('graphql');
 
 const schema = buildSchema(`
    type Query {
-      events: [Event!]!
       recipes: [Recipe!]!
-      event(id: Int!): Event!
-      recipe(id: Int!): Recipe!
+      recipe(id: ID!): Recipe!
       hello: String
       currentUser(id: ID!): User
    }
-
-   type Event {
-      id: ID!
-      title: String!
-      description: String
-      date: String
-      attendants: [Person!]
-    }
-
-    type Person {
-      id: ID!
-      name: String!
-      age: Int
-    }
 
    type User {
       id: ID!
@@ -44,7 +28,6 @@ const schema = buildSchema(`
    }
 
    type Mutation {
-      editEvent(id: Int!, title: String!, description: String!): Event!
       addTagToRecipe(id: Int!, category: String!): Recipe!
    }
 

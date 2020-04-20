@@ -33,33 +33,33 @@ const typeDefs = gql`
 
 const recipes = [
    {
-      id: 1,
+      id: '1',
       name: 'Apple Pie',
       instructions: 'Insert instructions here',
       picture: 'Insert picture here',
       categories: [
          {
-            id: 1,
+            id: '1',
             name: 'Vegetarian',
          },
          {
-            id: 2,
+            id: '2',
             name: 'Dessert',
          },
       ],
    },
    {
-      id: 2,
+      id: '2',
       name: 'Tomato Soup',
       instructions: 'Insert instructions here',
       picture: 'Insert picture here',
       categories: [
          {
-            id: 1,
+            id: '1',
             name: 'Vegetarian',
          },
          {
-            id: 3,
+            id: '3',
             name: 'Soup',
          },
       ],
@@ -70,6 +70,8 @@ const resolvers = {
    Query: {
       recipes: () => recipes,
       hello: () => 'hi',
+      recipe: (obj, { id }, context, info) =>
+         recipes.find((recipe) => recipe.id === id),
    },
 };
 
